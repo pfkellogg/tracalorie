@@ -115,17 +115,33 @@ class Workout {
   }
 }
 
-const tracker = new CalorieTracker()
+class App {
+  constructor() {
+    this._tracker = new CalorieTracker()
 
-const breakfast = new Meal('Breakfast', 400)
-tracker.addMeal(breakfast)
+    document
+      .getElementById('meal-form')
 
-const lunch = new Meal('Lunch', 350)
-tracker.addMeal(lunch)
+      // bind to App and not to the form where the click event is attached to
+      .addEventListener('submit', this._newMeal.bind(this))
+    //.addEventListener('submit', this._newMeal)
+  }
 
-const run = new Workout('Morning Run', 320)
-tracker.addWorkout(run)
+  _newMeal(e) {
+    e.preventDefault()
 
-console.log(tracker._meals)
-console.log(tracker._workouts)
-console.log(tracker._totalCalories)
+    const name = document.getElementById('meal-name')
+    const calories = document.getElementById('meal-calories')
+
+    // Validate inputs
+
+    if (name.value === '' || calories.value === '') {
+      alert('Please fill in all fields')
+      return
+    }
+
+    console.log(this)
+  }
+}
+
+const app = new App()
