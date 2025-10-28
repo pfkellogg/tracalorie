@@ -140,7 +140,16 @@ class App {
       return
     }
 
-    console.log(this)
+    const meal = new Meal(name.value, +calories.value)
+    this._tracker.addMeal(meal)
+
+    name.value = ''
+    calories.value = ''
+
+    const collapseMeal = document.getElementById('collapse-meal')
+    const bsCollapse = new bootstrap.Collapse(collapseMeal, {
+      toggle: true
+    })
   }
 }
 
