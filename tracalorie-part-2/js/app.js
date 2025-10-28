@@ -13,15 +13,21 @@ class CalorieTracker {
     this._displayCaloriesProgress()
   }
 
+  // Public Methods (API)
+
   addMeal(meal) {
     this._meals.push(meal)
     this._totalCalories += meal.calories
+    this._render()
   }
 
   addWorkout(workout) {
     this._workouts.push(workout)
     this._totalCalories -= workout.calories
+    this._render()
   }
+
+  // Private Methods
 
   _displayCaloriesTotal() {
     const totalCaloriesEl = document.getElementById('calories-total')
@@ -40,7 +46,6 @@ class CalorieTracker {
       (total, meal) => total + meal.calories,
       0
     )
-
     caloriesConsumedEl.innerHTML = consumed
   }
 
@@ -51,23 +56,28 @@ class CalorieTracker {
       (total, workout) => total + workout.calories,
       0
     )
-
     caloriesBurnedEl.innerHTML = burned
   }
 
   _displayCaloriesRemaining() {
     const caloriesRemainingEl = document.getElementById('calories-remaining')
     const progressEl = document.getElementById('calorie-progress')
+
     const remaining = this._calorieLimit - this._totalCalories
     caloriesRemainingEl.innerHTML = remaining
+
     if (remaining <= 0) {
-      caloriesRemainingEl.parentElement.classList.remove('bg-light')
-      caloriesRemainingEl.parentElement.classList.add('bg-danger')
-      progressEl.classList.add('bg-danger')
+      caloriesRemainingEl.parentElement.parentElement.classList.remove(
+        'bg-light'
+      )
+      caloriesRemainingEl.parentElement.parentElement.classList.add('bg-danger')
       progressEl.classList.remove('bg-success')
+      progressEl.classList.add('bg-danger')
     } else {
-      caloriesRemainingEl.parentElement.classList.remove('bg-danger')
-      caloriesRemainingEl.parentElement.classList.add('bg-light')
+      caloriesRemainingEl.parentElement.parentElement.classList.remove(
+        'bg-danger'
+      )
+      caloriesRemainingEl.parentElement.parentElement.classList.add('bg-light')
       progressEl.classList.remove('bg-danger')
       progressEl.classList.add('bg-success')
     }
@@ -85,7 +95,7 @@ class CalorieTracker {
     this._displayCaloriesConsumed()
     this._displayCaloriesBurned()
     this._displayCaloriesRemaining()
-    this._displayCalorieProgress()
+    this._displayCaloriesProgress()
   }
 }
 
@@ -105,73 +115,17 @@ class Workout {
   }
 }
 
-class App {
-  constructor() {
-    this._tracker = new CalorieTracker()
+const tracker = new CalorieTracker()
 
-    document
-      .getElementById('meal-form')
-      .addEventListener('submit', this._newMeal.bind(this, 'meal'))
+const breakfast = new Meal('Breakfast', 400)
+tracker.addMeal(breakfast)
 
-    document
-      .getElementById('workout-form')
-      .addEventListener('submit', this._newWorkout.bind(this, 'workout'))
-  }
+const lunch = new Meal('Lunch', 350)
+tracker.addMeal(lunch)
 
-  _newMeal(e) {
-    e.preventDefault()
-    console.log(1)
-    const name = document.getElementById('meal-name')
-    const calories = document.getElementById('meal-calories')
+const run = new Workout('Morning Run', 320)
+tracker.addWorkout(run)
 
-    if (name.value === '' || calories.value === '') {
-      alert('Please fill in all fields')
-      return
-    }
-
-    // Create a new meal
-    const meal = new Meal(name.value, +calories.value)
-
-    // Add the meal to the tracker
-    this._tracker.addMeal(meal)
-
-    // Clear the form
-    name.value = ''
-    calories.value = ''
-
-    // Collapse the form
-    const collapseMeal = document.getElementById('collapse-meal')
-    const bsCollapse = new bootstrap.Collapse(collapseMeal, {
-      toggle: true
-    })
-  }
-
-  _newWorkout(e) {
-    e.preventDefault()
-    const name = document.getElementById('workout-name')
-    const calories = document.getElementById('workout-calories')
-
-    if (name.value === '' || calories.value === '') {
-      alert('Please fill in all fields')
-      return
-    }
-
-    // Create a new workout
-    const workout = new Workout(name.value, +calories.value)
-
-    // Add the workout to the tracker
-    this._tracker.addWorkout(workout)
-
-    // Clear the form
-    name.value = ''
-    calories.value = ''
-
-    // Collapse the form
-    const collapseWorkout = document.getElementById('collapse-workout')
-    const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
-      toggle: true
-    })
-  }
-}
-
-const app = new App()
+console.log(tracker._meals)
+console.log(tracker._workouts)
+console.log(tracker._totalCalories)
