@@ -11,7 +11,11 @@ class CalorieTracker {
     this._displayCaloriesBurned()
     this._displayCaloriesRemaining()
     this._displayCaloriesProgress()
+
+    document.getElementById('limit').value = this._calorieLimit
   }
+
+  // Public methods
 
   loadItems() {
     this._meals.forEach(meal => this._displayNewMeal(meal))
@@ -66,6 +70,7 @@ class CalorieTracker {
     this._totalCalories = 0
     this._meals = []
     this._workouts = []
+    Storage.clearAll()
     this._render()
   }
 
@@ -288,6 +293,14 @@ class Storage {
     })
 
     localStorage.setItem('workouts', JSON.stringify(workouts))
+  }
+
+  static clearAll() {
+    localStorage.removeItem('totalCalories')
+    localStorage.removeItem('meals')
+    localStorage.removeItem('workouts')
+
+    // localStorage.clear()
   }
 }
 
